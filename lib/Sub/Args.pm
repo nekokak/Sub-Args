@@ -1,7 +1,7 @@
 package Sub::Args;
 use strict;
 use warnings;
-use base 'Exporter';
+use Exporter 'import';
 our @EXPORT = qw( args );
 
 our $VERSION = '0.01';
@@ -15,7 +15,7 @@ sub args {
     my $caller_args;
     {
         package DB;
-        my @c = caller 1;
+        () = caller(1);
         $caller_args = $DB::args[1];
     }
 
