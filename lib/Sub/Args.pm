@@ -13,7 +13,9 @@ sub args {
     }
 
     my $caller_args;
-    {
+    if ($_[1]) {
+        $caller_args = $_[1];
+    } else {
         package DB;
         () = caller(1);
         $caller_args = $DB::args[1];

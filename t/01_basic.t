@@ -2,12 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 
-my $args = Mock->foo(
-    {
-        name => 'nekokak',
-    }
-);
-
 is_deeply Mock->foo({name => 'nekokak'}), +{name => 'nekokak'};
 is_deeply Mock->foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
 is_deeply Mock->foo({name => 'nekokak', age => 32, nick => 'inukaku'}), +{name => 'nekokak', age => 32};
@@ -27,6 +21,8 @@ eval {
 };
 like $@, qr/It is only hashref to be able to treat args method./;
 
+is_deeply Mock->baz({name => 'nekokak'}), +{name => 'nekokak'};
+
 done_testing;
 
 package Mock;
@@ -44,6 +40,16 @@ sub foo {
 
 sub bar {
     args('bbb');
+}
+
+sub baz {
+    my $args = args(
+        {
+            name => 1,
+            age  => 0,
+        }, @_
+    );
+    $args;
 }
 
 1;
