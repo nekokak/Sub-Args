@@ -42,7 +42,7 @@ __END__
 
 =head1 NAME
 
-Sub::Args - Smart check/get arguments.
+Sub::Args - Simple check/get arguments.
 
 =head1 SYNOPSIS
 
