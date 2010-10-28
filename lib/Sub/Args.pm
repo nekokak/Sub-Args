@@ -58,10 +58,41 @@ Sub::Args - Simple check/get arguments.
       );
       $args;
   }
+  
+  # got +{name => nekokak}
+  foo(
+      {
+          name => 'nekokak',
+      }
+  );
+  
+  # got +{name => 'nekokak', age => 32}
+  foo(
+      {
+          name => 'nekokak',
+          age  => 32,
+      }
+  );
+  
+  # got +{name => 'nekokak', age => 32}
+  foo(
+      {
+          name => 'nekokak',
+          age  => 32,
+          nick => 'inukaku',
+      }
+  );
+  
+  # name arguments must required. for die.
+  foo(
+      {
+          age => 32,
+      }
+  );
 
 =head1 DESCRIPTION
 
-Sub::Args is
+This module makes your module more readable, and writable =p
 
 =head1 AUTHOR
 
