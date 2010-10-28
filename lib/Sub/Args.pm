@@ -13,8 +13,10 @@ sub args {
     }
 
     my $caller_args;
-    if ($_[1]) {
+    if (scalar(@_) >= 2) {
         $caller_args = $_[1];
+    } elsif (scalar(@_) ==1) {
+        $caller_args = $_[0];
     } else {
         package DB;
         () = caller(1);

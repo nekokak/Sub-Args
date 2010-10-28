@@ -4,9 +4,10 @@ use warnings;
 use Benchmark qw/cmpthese/;
 
 cmpthese(100000, {
-    'P::V'      => sub {Mock::PV->call(name => 'nekokak')},
-    'S::A'      => sub {Mock::SA->call({name => 'nekokak'})},
-    'S::A_fast' => sub {Mock::SA->call_fast({name => 'nekokak'})},
+    'P::V'       => sub {Mock::PV->call(name => 'nekokak')},
+    'S::A'       => sub {Mock::SA->call({name => 'nekokak'})},
+    'S::A_fast'  => sub {Mock::SA->call_fast({name => 'nekokak'})},
+    'S::A_fast2' => sub {Mock::SA->call_fast2({name => 'nekokak'})},
 });
 
 package Mock::PV;
@@ -26,6 +27,11 @@ sub call {
 }
 
 sub call_fast {
+    my $args = args({name => 1}, @_);
+}
+
+sub call_fast2 {
+    shift;
     my $args = args({name => 1}, @_);
 }
 

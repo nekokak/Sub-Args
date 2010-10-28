@@ -22,6 +22,7 @@ eval {
 like $@, qr/It is only hashref to be able to treat args method./;
 
 is_deeply Mock->baz({name => 'nekokak'}), +{name => 'nekokak'};
+is_deeply Mock->hoge({name => 'nekokak'}), +{name => 'nekokak'};
 
 done_testing;
 
@@ -43,6 +44,17 @@ sub bar {
 }
 
 sub baz {
+    my $args = args(
+        {
+            name => 1,
+            age  => 0,
+        }, @_
+    );
+    $args;
+}
+
+sub hoge {
+    my $self = shift;
     my $args = args(
         {
             name => 1,
