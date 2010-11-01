@@ -8,10 +8,11 @@ our $VERSION = '0.01';
 
 sub args {
     my $opts = shift;
+    
     if (ref $opts ne 'HASH') {
         die 'args method require hashref.';
     }
-
+    
     my $caller_args;
     if (scalar(@_) >= 2) {
         $caller_args = $_[1];
@@ -27,16 +28,11 @@ sub args {
         die 'It is only hashref to be able to treat args method.';
     }
 
-    my $args;
-    for my $key (keys %$opts) {
-        if (exists $caller_args->{$key}) {
-            $args->{$key} = $caller_args->{$key};
-        }
-        if ($opts->{$key} && not defined $args->{$key}) {
-            die "$key required!";
-        }
-    }
-    $args;
+    map {($opts->{$_} && not defined $caller_args->{$_}) ? die "$_ required!": () } keys %$opts;
+
+    map {(not defined $opts->{$_}) ? die "$_ undefined!": () } keys %$caller_args;
+
+    $caller_args;
 }
 
 1;
