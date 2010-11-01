@@ -8,12 +8,12 @@ is_deeply Mock->foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age =>
 eval {
     Mock->foo({name => 'nekokak', age => 32, nick => 'inukaku'});
 };
-like $@, qr/nick undefined!/;
+like $@, qr/not listed in the following parameter: nick./;
 
 eval {
     Mock->foo({age => 32});
 };
-like $@, qr/name required!/;
+like $@, qr/Mandatory parameter 'name' missing./;
 
 eval {
     Mock->bar({age => 32});
