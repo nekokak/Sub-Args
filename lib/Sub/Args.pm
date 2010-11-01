@@ -5,7 +5,7 @@ use Exporter 'import';
 our @EXPORT = qw( args );
 use Carp ();
 
-our $VERSION = 'y';
+our $VERSION = '0.03';
 
 sub args {
     my $opts = shift;
