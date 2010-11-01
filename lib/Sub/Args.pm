@@ -3,8 +3,9 @@ use strict;
 use warnings;
 use Exporter 'import';
 our @EXPORT = qw( args );
+use Carp ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub args {
     my $opts = shift;
@@ -28,9 +29,9 @@ sub args {
         die 'It is only hashref to be able to treat args method.';
     }
 
-    map {($opts->{$_} && not defined $caller_args->{$_}) ? die "$_ required!": () } keys %$opts;
+    map {($opts->{$_} && not defined $caller_args->{$_}) ? Carp::confess "Mandatory parameter '$_' missing.": () } keys %$opts;
 
-    map {(not defined $opts->{$_}) ? die "$_ undefined!": () } keys %$caller_args;
+    map {(not defined $opts->{$_}) ? Carp::confess "not listed in the following parameter: $_.": () } keys %$caller_args;
 
     $caller_args;
 }
@@ -70,7 +71,7 @@ Sub::Args - Simple check/get arguments.
       }
   );
   
-  # got +{name => 'nekokak', age => 32}
+  # nick parameter don't defined for args method.
   foo(
       {
           name => 'nekokak',
@@ -94,7 +95,13 @@ This module makes your module more readable, and writable =p
 
 Atsushi Kobayashi E<lt>nekokak _at_ gmail _dot_ comE<gt>
 
+=head1 CONTRIBUTORS
+
+hirobanex : Hiroyuki Akabane
+
 =head1 SEE ALSO
+
+L<Params::Validate>
 
 =head1 LICENSE
 

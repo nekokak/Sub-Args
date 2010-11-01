@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Benchmark qw/cmpthese/;
 
-cmpthese(100000, {
+cmpthese(200000, {
     'P::V'       => sub {Mock::PV->call(name => 'nekokak')},
     'S::A'       => sub {Mock::SA->call({name => 'nekokak'})},
     'S::A_fast'  => sub {Mock::SA->call_fast({name => 'nekokak'})},
@@ -37,7 +37,7 @@ sub call_fast2 {
 
 __END__
                Rate       P::V       S::A S::A_fast2  S::A_fast
-P::V        49505/s         --       -61%       -75%       -76%
-S::A       128205/s       159%         --       -35%       -38%
-S::A_fast2 196078/s       296%        53%         --        -6%
-S::A_fast  208333/s       321%        62%         6%         --
+P::V        50125/s         --       -66%       -79%       -80%
+S::A       147059/s       193%         --       -39%       -43%
+S::A_fast2 240964/s       381%        64%         --        -6%
+S::A_fast  256410/s       412%        74%         6%         --

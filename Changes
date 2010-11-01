@@ -1,5 +1,11 @@
 Revision history for Perl extension Sub::Args
 
+0.02
+   2010-11-01
+        - more fast. (thanks hirobanex)
+        - [INCOMPATIBLE CHANGE] When the parameter not defined existed, it changed like doing die.
+        - change die message.
+
 0.01
    2010-10-28
         - first release.
