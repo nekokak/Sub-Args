@@ -3,12 +3,20 @@ use strict;
 use warnings;
 use Benchmark qw/cmpthese/;
 
-cmpthese(200000, {
+cmpthese(100000, {
+    'SM::A'      => sub {Mock::SMA->call({name => 'nekokak'})},
     'P::V'       => sub {Mock::PV->call(name => 'nekokak')},
     'S::A'       => sub {Mock::SA->call({name => 'nekokak'})},
     'S::A_fast'  => sub {Mock::SA->call_fast({name => 'nekokak'})},
     'S::A_fast2' => sub {Mock::SA->call_fast2({name => 'nekokak'})},
 });
+
+package Mock::SMA;
+use Smart::Args;
+
+sub call {
+    args my $self, my $name;
+}
 
 package Mock::PV;
 use Params::Validate qw(:all);
@@ -36,8 +44,10 @@ sub call_fast2 {
 }
 
 __END__
-               Rate       P::V       S::A S::A_fast2  S::A_fast
-P::V        50125/s         --       -66%       -79%       -80%
-S::A       147059/s       193%         --       -39%       -43%
-S::A_fast2 240964/s       381%        64%         --        -6%
-S::A_fast  256410/s       412%        74%         6%         --
+               Rate       P::V      SM::A       S::A S::A_fast2  S::A_fast
+P::V        24691/s         --       -56%       -63%       -76%       -76%
+SM::A       56180/s       128%         --       -17%       -44%       -46%
+S::A        67568/s       174%        20%         --       -33%       -35%
+S::A_fast2 101010/s       309%        80%        49%         --        -3%
+S::A_fast  104167/s       322%        85%        54%         3%         --
+
