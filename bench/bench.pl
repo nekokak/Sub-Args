@@ -8,7 +8,6 @@ cmpthese(100000, {
     'P::V'       => sub {Mock::PV->call(name => 'nekokak')},
     'S::A'       => sub {Mock::SA->call({name => 'nekokak'})},
     'S::A_fast'  => sub {Mock::SA->call_fast({name => 'nekokak'})},
-    'S::A_fast2' => sub {Mock::SA->call_fast2({name => 'nekokak'})},
 });
 
 package Mock::SMA;
@@ -35,19 +34,13 @@ sub call {
 }
 
 sub call_fast {
-    my $args = args({name => 1}, @_);
-}
-
-sub call_fast2 {
     shift;
     my $args = args({name => 1}, @_);
 }
 
 __END__
-               Rate       P::V      SM::A       S::A S::A_fast2  S::A_fast
-P::V        24691/s         --       -56%       -63%       -76%       -76%
-SM::A       56180/s       128%         --       -17%       -44%       -46%
-S::A        67568/s       174%        20%         --       -33%       -35%
-S::A_fast2 101010/s       309%        80%        49%         --        -3%
-S::A_fast  104167/s       322%        85%        54%         3%         --
-
+              Rate      P::V     SM::A      S::A S::A_fast
+P::V       46729/s        --      -55%      -61%      -78%
+SM::A     103093/s      121%        --      -13%      -52%
+S::A      119048/s      155%       15%        --      -44%
+S::A_fast 212766/s      355%      106%       79%        --

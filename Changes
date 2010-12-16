@@ -1,5 +1,9 @@
 Revision history for Perl extension Sub::Args
 
+0.04
+   2010-12-16
+        - args can receives hash or hashref argument.
+
 0.03
    2010-11-01
         - oops version fixed.
