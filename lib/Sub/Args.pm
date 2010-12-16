@@ -5,33 +5,34 @@ use Exporter 'import';
 our @EXPORT = qw( args );
 use Carp ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub args {
-    my $opts = shift;
+    my $rule = shift;
     
-    if (ref $opts ne 'HASH') {
+    if (ref $rule ne 'HASH') {
         die 'args method require hashref.';
     }
     
-    my $caller_args;
-    if (scalar(@_) >= 2) {
-        $caller_args = $_[1];
-    } elsif (scalar(@_) ==1) {
-        $caller_args = $_[0];
-    } else {
+    my $caller_args = ref($_[0]) eq 'HASH' ? $_[0] : {@_};
+    unless (keys %$caller_args) {
         package DB;
         () = caller(1);
-        $caller_args = $DB::args[1];
+        my @args = @DB::args;
+        shift @args;
+        if (ref($args[0]) eq 'HASH') {
+            $caller_args = $args[0];
+        } else {
+            if (scalar(@args) % 2 == 1 ) {
+                Carp::confess "not allow excluding hash or hashref";
+            }
+            $caller_args = {@args};
+        }
     }
 
-    if (ref $caller_args ne 'HASH') {
-        die 'It is only hashref to be able to treat args method.';
-    }
+    map {($rule->{$_} && not defined $caller_args->{$_}) ? Carp::confess "Mandatory parameter '$_' missing.": () } keys %$rule;
 
-    map {($opts->{$_} && not defined $caller_args->{$_}) ? Carp::confess "Mandatory parameter '$_' missing.": () } keys %$opts;
-
-    map {(not defined $opts->{$_}) ? Carp::confess "not listed in the following parameter: $_.": () } keys %$caller_args;
+    map {(not defined $rule->{$_}) ? Carp::confess "not listed in the following parameter: $_.": () } keys %$caller_args;
 
     $caller_args;
 }
@@ -45,8 +46,10 @@ Sub::Args - Simple check/get arguments.
 
 =head1 SYNOPSIS
 
+  package Your::Class;
   use Sub::Args;
   sub foo {
+      my $class = shift;
       my $args = args(
           {
               name => 1,
@@ -57,14 +60,14 @@ Sub::Args - Simple check/get arguments.
   }
   
   # got +{name => nekokak}
-  foo(
+  Your::Class->foo(
       {
           name => 'nekokak',
       }
   );
   
   # got +{name => 'nekokak', age => 32}
-  foo(
+  Your::Class->foo(
       {
           name => 'nekokak',
           age  => 32,
@@ -72,7 +75,7 @@ Sub::Args - Simple check/get arguments.
   );
   
   # nick parameter don't defined for args method.
-  foo(
+  Your::Class->foo(
       {
           name => 'nekokak',
           age  => 32,
@@ -81,9 +84,31 @@ Sub::Args - Simple check/get arguments.
   );
   
   # name arguments must required. for die.
-  foo(
+  Your::Class->foo(
       {
           age => 32,
+      }
+  );
+
+or
+
+  package Your::Class;
+  use Sub::Args;
+  sub foo {
+      my $class = shift;
+      my $args = args(
+          {
+              name => 1,
+              age  => 0,
+          }, @_
+      );
+      $args;
+  }
+  
+  # got +{name => nekokak}
+  Your::Class->foo(
+      {
+          name => 'nekokak',
       }
   );
 
@@ -102,6 +127,10 @@ hirobanex : Hiroyuki Akabane
 =head1 SEE ALSO
 
 L<Params::Validate>
+
+L<Smart::Args>
+
+L<Data::Validator>
 
 =head1 LICENSE
 
