@@ -30,7 +30,28 @@ use Test::More;
         );
         $args;
     }
+
+    sub no_lock_key {
+        my $class = shift;
+        my $args = args({name => 1, age => 0});
+        local $SIG{__WARN__} = sub {};
+        warn $args->{name};
+        warn $args->{age};
+        warn $args->{error};
+    }
 }
+
+subtest 'no_lock_key' => sub {
+    eval {
+        Mock->no_lock_key({name => 'nekokak', age => 32});
+    };
+    like $@, qr/Attempt to access disallowed key 'error' in a restricted hash at/;
+    eval {
+        Mock->no_lock_key({name => 'nekokak'});
+    };
+    like $@, qr/Attempt to access disallowed key 'error' in a restricted hash at/;
+    ok 1;
+};
 
 subtest 'success case / no @_' => sub {
     is_deeply +Mock->foo({name => 'nekokak'}), +{name => 'nekokak'};
