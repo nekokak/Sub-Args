@@ -1,11 +1,13 @@
 package Sub::Args;
 use strict;
 use warnings;
+use 5.008001;
 use Exporter 'import';
 our @EXPORT = qw( args );
 use Carp ();
+use Hash::Util ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub args {
     my $rule = shift;
@@ -34,6 +36,7 @@ sub args {
 
     map {(not defined $rule->{$_}) ? Carp::confess "not listed in the following parameter: $_.": () } keys %$caller_args;
 
+    Hash::Util::lock_keys(%$caller_args, keys %$rule);
     $caller_args;
 }
 
