@@ -1,5 +1,10 @@
 Revision history for Perl extension Sub::Args
 
+0.05
+   2010-12-22
+        - use Internals::SvREADONLY.
+        - fixed Makefile.PL
+
 0.04
    2010-12-16
         - args can receives hash or hashref argument.
