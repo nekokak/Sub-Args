@@ -53,6 +53,27 @@ subtest 'no_lock_key' => sub {
     ok 1;
 };
 
+subtest 'success case / no invocant' => sub {
+    {
+        package Mock::IV;
+        use Sub::Args;
+
+        sub foo {
+            my $args = args(
+                {
+                    name => 1,
+                    age  => 0,
+                }
+            );
+            $args;
+        }
+
+        ::is_deeply foo({name => 'nekokak'}), +{name => 'nekokak', age => undef};
+        ::is_deeply foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
+        ::is_deeply foo(name => 'nekokak'), +{name => 'nekokak', age => undef};
+    }
+};
+
 subtest 'success case / no @_' => sub {
     is_deeply +Mock->foo({name => 'nekokak'}), +{name => 'nekokak', age => undef};
     is_deeply +Mock->foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
