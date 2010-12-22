@@ -15,12 +15,16 @@ sub args {
         die 'args method require hashref.';
     }
     
+    my $invocant = caller(0);
+
     my $caller_args = ref($_[0]) eq 'HASH' ? $_[0] : {@_};
     unless (keys %$caller_args) {
         package DB;
         () = caller(1);
         my @args = @DB::args;
-        shift @args;
+
+        shift @args if $invocant eq $args[0];
+
         if (ref($args[0]) eq 'HASH') {
             $caller_args = $args[0];
         } else {
