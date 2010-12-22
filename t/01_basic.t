@@ -31,7 +31,7 @@ use Test::More;
         $args;
     }
 
-    sub no_lock_key {
+    sub no_lock_key_access {
         my $class = shift;
         my $args = args({name => 1, age => 0});
         local $SIG{__WARN__} = sub {};
@@ -43,26 +43,26 @@ use Test::More;
 
 subtest 'no_lock_key' => sub {
     eval {
-        Mock->no_lock_key({name => 'nekokak', age => 32});
+        Mock->no_lock_key_access({name => 'nekokak', age => 32});
     };
     like $@, qr/Attempt to access disallowed key 'error' in a restricted hash at/;
     eval {
-        Mock->no_lock_key({name => 'nekokak'});
+        Mock->no_lock_key_access({name => 'nekokak'});
     };
     like $@, qr/Attempt to access disallowed key 'error' in a restricted hash at/;
     ok 1;
 };
 
 subtest 'success case / no @_' => sub {
-    is_deeply +Mock->foo({name => 'nekokak'}), +{name => 'nekokak'};
+    is_deeply +Mock->foo({name => 'nekokak'}), +{name => 'nekokak', age => undef};
     is_deeply +Mock->foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
-    is_deeply +Mock->foo(name => 'nekokak'), +{name => 'nekokak'};
+    is_deeply +Mock->foo(name => 'nekokak'), +{name => 'nekokak', age => undef};
 };
 
 subtest 'success case / use @_' => sub {
-    is_deeply +Mock->baz({name => 'nekokak'}), +{name => 'nekokak'};
+    is_deeply +Mock->baz({name => 'nekokak'}), +{name => 'nekokak', age => undef};
     is_deeply +Mock->baz({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
-    is_deeply +Mock->baz(name => 'nekokak'), +{name => 'nekokak'};
+    is_deeply +Mock->baz(name => 'nekokak'), +{name => 'nekokak', age => undef};
 };
 
 subtest 'error case' => sub {
