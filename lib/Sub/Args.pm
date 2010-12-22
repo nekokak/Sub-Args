@@ -5,7 +5,6 @@ use 5.008001;
 use Exporter 'import';
 our @EXPORT = qw( args );
 use Carp ();
-use Hash::Util ();
 
 our $VERSION = '0.05';
 
@@ -36,7 +35,11 @@ sub args {
 
     map {(not defined $rule->{$_}) ? Carp::confess "not listed in the following parameter: $_.": () } keys %$caller_args;
 
-    Hash::Util::lock_keys(%$caller_args, keys %$rule);
+    for my $k (keys %$rule) {
+        $caller_args->{$k} = undef unless exists $caller_args->{$k};
+    }
+
+    Internals::SvREADONLY %$caller_args, 1;
     $caller_args;
 }
 
@@ -85,6 +88,14 @@ Sub::Args - Simple check/get arguments.
           nick => 'inukaku',
       }
   );
+  # or
+  my $args = Your::Class->foo(
+      {
+          name => 'nekokak',
+          age  => 32,
+      }
+  );
+  $args->{nick}; # for die.
   
   # name arguments must required. for die.
   Your::Class->foo(
@@ -92,6 +103,7 @@ Sub::Args - Simple check/get arguments.
           age => 32,
       }
   );
+
 
 or
 
