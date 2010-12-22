@@ -110,12 +110,12 @@ subtest 'error case' => sub {
     eval {
         Mock->bar({age => 32});
     };
-    like $@, qr/args method require hashref./;
+    like $@, qr/args method require hashref's rule./;
 
     eval {
         Mock->bar(age => 32);
     };
-    like $@, qr/args method require hashref./;
+    like $@, qr/args method require hashref's rule./;
 
     eval {
         Mock->foo('aaa');

@@ -39,8 +39,16 @@ sub call_fast {
 }
 
 __END__
+# v0.04
               Rate      P::V     SM::A      S::A S::A_fast
 P::V       46729/s        --      -55%      -61%      -78%
 SM::A     103093/s      121%        --      -13%      -52%
 S::A      119048/s      155%       15%        --      -44%
 S::A_fast 212766/s      355%      106%       79%        --
+
+# use Internals::SvREADONLY
+              Rate      P::V      S::A     SM::A S::A_fast
+P::V       46729/s        --      -49%      -56%      -70%
+S::A       91743/s       96%        --      -13%      -40%
+SM::A     105263/s      125%       15%        --      -32%
+S::A_fast 153846/s      229%       68%       46%        --

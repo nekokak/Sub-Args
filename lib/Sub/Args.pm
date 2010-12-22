@@ -6,13 +6,13 @@ use Exporter 'import';
 our @EXPORT = qw( args );
 use Carp ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub args {
     my $rule = shift;
     
     if (ref $rule ne 'HASH') {
-        die 'args method require hashref.';
+        Carp::croak "args method require hashref's rule.";
     }
     
     my $invocant = caller(0);
@@ -29,7 +29,7 @@ sub args {
             $caller_args = $args[0];
         } else {
             if (scalar(@args) % 2 == 1 ) {
-                Carp::confess "not allow excluding hash or hashref";
+                Carp::confess "arguments not allow excluding hash or hashref";
             }
             $caller_args = {@args};
         }
@@ -39,9 +39,7 @@ sub args {
 
     map {(not defined $rule->{$_}) ? Carp::confess "not listed in the following parameter: $_.": () } keys %$caller_args;
 
-    for my $k (keys %$rule) {
-        $caller_args->{$k} = undef unless exists $caller_args->{$k};
-    }
+    map {$caller_args->{$_} = undef unless exists $caller_args->{$_}} keys %$rule;
 
     Internals::SvREADONLY %$caller_args, 1;
     $caller_args;
@@ -68,8 +66,18 @@ Sub::Args - Simple check/get arguments.
       );
       $args;
   }
+  sub bar {
+      my $class = shift;
+      my $args = args(
+          {
+              name => 1,
+              age  => 0,
+          }
+      );
+      $args->{email}; # die: email is not defined hash key.
+  }
   
-  # got +{name => nekokak}
+  # got +{name => nekokak, age => undef}
   Your::Class->foo(
       {
           name => 'nekokak',
@@ -84,7 +92,7 @@ Sub::Args - Simple check/get arguments.
       }
   );
   
-  # nick parameter don't defined for args method.
+  # die: nick parameter don't defined for args method.
   Your::Class->foo(
       {
           name => 'nekokak',
@@ -92,22 +100,13 @@ Sub::Args - Simple check/get arguments.
           nick => 'inukaku',
       }
   );
-  # or
-  my $args = Your::Class->foo(
-      {
-          name => 'nekokak',
-          age  => 32,
-      }
-  );
-  $args->{nick}; # for die.
   
-  # name arguments must required. for die.
+  # die: name arguments must required.
   Your::Class->foo(
       {
           age => 32,
       }
   );
-
 
 or
 
@@ -131,9 +130,33 @@ or
       }
   );
 
+or
+
+  package Your::Class;
+  use Sub::Args;
+  sub foo {
+      my $args = args(
+          {
+              name => 1,
+              age  => 0,
+          }, @_
+      );
+      $args;
+  }
+  # got +{name => nekokak, age => undef}
+  foo(
+      {
+          name => 'nekokak',
+      }
+  );
+
 =head1 DESCRIPTION
 
 This module makes your module more readable, and writable =p
+
+and restrict a argument's hash. =(
+
+When it accesses the key that doesn't exist, the exception is generated.
 
 =head1 AUTHOR
 
