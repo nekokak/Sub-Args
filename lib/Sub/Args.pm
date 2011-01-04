@@ -21,17 +21,16 @@ sub args {
     unless (keys %$caller_args) {
         package DB;
         () = caller(1);
-        my @args = @DB::args;
 
-        shift @args if $invocant eq $args[0];
+        shift @DB::args if $invocant eq $DB::args[0];
 
-        if (ref($args[0]) eq 'HASH') {
-            $caller_args = $args[0];
+        if (ref($DB::args[0]) eq 'HASH') {
+            $caller_args = $DB::args[0];
         } else {
-            if (scalar(@args) % 2 == 1 ) {
+            if (scalar(@DB::args) % 2 == 1 ) {
                 Carp::confess "arguments not allow excluding hash or hashref";
             }
-            $caller_args = {@args};
+            $caller_args = {@DB::args};
         }
     }
 
