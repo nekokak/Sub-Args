@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.008001;
 use Exporter 'import';
-our @EXPORT = qw( args );
+our @EXPORT = qw( args args_pos );
 use Carp ();
 
 our $VERSION = '0.06';
@@ -43,6 +43,29 @@ sub args {
 
     Internals::SvREADONLY %$caller_args, 1;
     $caller_args;
+}
+
+sub args_pos {
+    my $invocant = caller(0);
+    {
+        package DB;
+        () = caller(1);
+        shift @DB::args if $invocant eq $DB::args[0];
+    }
+    my @args = @DB::args;
+
+    my @expected;
+    for(my $i = 0; $i < @_; $i++){
+        if ($_[$i] && not defined $args[0]) {
+           Carp::confess "missing mandatory parameter. pos: $i"; 
+        }
+        $expected[$i] = shift @args;
+    }
+    if (scalar(@args) > 0) {
+        Carp::confess 'too much arguments. This function requires only ' . scalar(@_) . ' arguments.';
+    }
+
+    wantarray ? @expected : \@expected;
 }
 
 1;
