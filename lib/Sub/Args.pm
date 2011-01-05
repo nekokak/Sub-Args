@@ -6,7 +6,7 @@ use Exporter 'import';
 our @EXPORT = qw( args args_pos );
 use Carp ();
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub args {
     my $rule = shift;

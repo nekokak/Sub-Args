@@ -1,5 +1,9 @@
 Revision history for Perl extension Sub::Args
 
+0.07
+   2011-01-05
+        - add args_pos method.
+
 0.06
    2010-12-22
         - check invocant.
