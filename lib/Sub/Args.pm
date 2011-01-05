@@ -98,6 +98,10 @@ Sub::Args - Simple check/get arguments.
       );
       $args->{email}; # die: email is not defined hash key.
   }
+  sub baz {
+      my $class = shift;
+      my ($var1, $var2) = args_pos(1,0);
+  }
   
   # got +{name => nekokak, age => undef}
   Your::Class->foo(
@@ -129,6 +133,8 @@ Sub::Args - Simple check/get arguments.
           age => 32,
       }
   );
+
+  Your::Class->baz('val1');
 
 or
 
@@ -179,6 +185,16 @@ This module makes your module more readable, and writable =p
 and restrict a argument's hash. =(
 
 When it accesses the key that doesn't exist, the exception is generated.
+
+=head1 FUNCTIONS
+
+=head2 my $hash_ref = args(\%rule, [@_]);
+
+Check parameter and return read only hash-ref.
+
+=head2 my @vals = args_pos(@rule);
+
+Check parameter and return array or array-ref.
 
 =head1 AUTHOR
 
