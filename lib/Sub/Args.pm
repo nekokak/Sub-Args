@@ -21,8 +21,8 @@ sub args {
     unless (keys %$caller_args) {
         package DB;
         () = caller(1);
-
-        shift @DB::args if $invocant eq $DB::args[0];
+        my $perhaps_class = (ref $DB::args[0]) ? ref $DB::args[0]: $DB::args[0];
+        shift @DB::args if $invocant eq $perhaps_class;
 
         if (ref($DB::args[0]) eq 'HASH') {
             $caller_args = $DB::args[0];
@@ -49,7 +49,8 @@ sub args_pos {
     {
         package DB;
         () = caller(1);
-        shift @DB::args if $invocant eq $DB::args[0];
+        my $perhaps_class = (ref $DB::args[0]) ? ref $DB::args[0]: $DB::args[0];
+        shift @DB::args if $invocant eq $perhaps_class;
     }
     my @args = @DB::args;
 
