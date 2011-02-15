@@ -41,6 +41,23 @@ use Test::More;
     }
 }
 
+{
+    package MockObject;
+    use Sub::Args;
+
+    sub new{bless {}, +shift}
+    sub foo {
+        my $self = shift;
+        my $args = args(
+            {
+                name => 1,
+                age  => 0,
+            }
+        );
+        $args;
+    }
+}
+
 subtest 'no_lock_key' => sub {
     eval {
         Mock->no_lock_key_access({name => 'nekokak', age => 32});
@@ -74,10 +91,16 @@ subtest 'success case / no invocant' => sub {
     }
 };
 
-subtest 'success case / no @_' => sub {
+subtest 'success case / no object/no @_' => sub {
     is_deeply +Mock->foo({name => 'nekokak'}), +{name => 'nekokak', age => undef};
     is_deeply +Mock->foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
     is_deeply +Mock->foo(name => 'nekokak'), +{name => 'nekokak', age => undef};
+};
+
+subtest 'success case /object/no @_' => sub {
+    is_deeply +MockObject->new->foo({name => 'nekokak'}), +{name => 'nekokak', age => undef};
+    is_deeply +MockObject->new->foo({name => 'nekokak', age => 32}), +{name => 'nekokak', age => 32};
+    is_deeply +MockObject->new->foo(name => 'nekokak'), +{name => 'nekokak', age => undef};
 };
 
 subtest 'success case / use @_' => sub {

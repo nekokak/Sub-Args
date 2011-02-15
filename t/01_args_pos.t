@@ -10,12 +10,27 @@ use Test::More;
     }
 }
 
-subtest 'ok case' => sub {
+{
+    package MockObject;
+    use Sub::Args;
+    sub new{bless {},+shift}
+    sub foo {
+        my $self = shift;
+        my @args = args_pos(1,1,0);
+    }
+}
+#ジッサイノテストをかく
+subtest 'ok case /object' => sub {
+    is_deeply [MockObject->foo(1,2,3)], [qw/1 2 3/];
+    is_deeply [MockObject->foo(1,2)], [1,2,undef];
+};
+
+subtest 'ok case / no object' => sub {
     is_deeply [Mock->foo(1,2,3)], [qw/1 2 3/];
     is_deeply [Mock->foo(1,2)], [1,2,undef];
 };
 
-subtest 'error case' => sub {
+subtest 'error case / no object' => sub {
     eval {
         Mock->foo(1,2,3,4,5);
     };
