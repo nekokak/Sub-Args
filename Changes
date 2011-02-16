@@ -1,5 +1,9 @@
 Revision history for Perl extension Sub::Args
 
+0.08
+   2011-02-16
+        - fix object case.(thanks hirobanex)
+
 0.07
    2011-01-05
         - add args_pos method.

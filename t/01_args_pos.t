@@ -5,6 +5,7 @@ use Test::More;
 {
     package Mock;
     use Sub::Args;
+    sub new {bless {}, +shift}
     sub foo {
         my @args = args_pos(1,1,0);
     }
@@ -13,6 +14,12 @@ use Test::More;
 subtest 'ok case' => sub {
     is_deeply [Mock->foo(1,2,3)], [qw/1 2 3/];
     is_deeply [Mock->foo(1,2)], [1,2,undef];
+};
+
+subtest 'ok case/obj' => sub {
+    my $obj = Mock->new;
+    is_deeply [$obj->foo(1,2,3)], [qw/1 2 3/];
+    is_deeply [$obj->foo(1,2)], [1,2,undef];
 };
 
 subtest 'error case' => sub {

@@ -6,7 +6,7 @@ use Exporter 'import';
 our @EXPORT = qw( args args_pos );
 use Carp ();
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 sub args {
     my $rule = shift;
@@ -22,7 +22,7 @@ sub args {
         package DB;
         () = caller(1);
 
-        shift @DB::args if $invocant eq $DB::args[0];
+        shift @DB::args if $invocant eq (ref($DB::args[0])||$DB::args[0]);
 
         if (ref($DB::args[0]) eq 'HASH') {
             $caller_args = $DB::args[0];
@@ -49,7 +49,7 @@ sub args_pos {
     {
         package DB;
         () = caller(1);
-        shift @DB::args if $invocant eq $DB::args[0];
+        shift @DB::args if $invocant eq (ref($DB::args[0])||$DB::args[0]);
     }
     my @args = @DB::args;
 
